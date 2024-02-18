@@ -40,5 +40,6 @@
    git clone https://github.com/Divings/java-Dir.git
 
 ## 注意:
-1. **注意:** transaction_history.txtはすべての入出金記録が記録されているため、公開しない方が良いでしょう  
-(このリポジトリに含まれるtransaction_history.txtは開発用のダミーデータのみが含まれています。)
+1. **注意:** transaction_history.txtはすべての入出金記録が記録されているため、ダミーデータを設定した場合以外は公開しない方が良いでしょう  
+
+
