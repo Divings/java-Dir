@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Scanner;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -16,7 +15,6 @@ import java.sql.*;
 
 public class FinancialManagementSystem {
 	private static String loggedInUser = null;
-
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in); // 新しいScannerオブジェクトを作成
 
@@ -42,7 +40,7 @@ public class FinancialManagementSystem {
 										System.out
 												.println("Password authentication failed 3 times. Exit the software.");
 										System.out.println("Exiting the program due to login failure.");
-										input(" >> ");
+										InputUtils.input(" >> ");
 										System.exit(0);
 									}
 									loginvalue = loginScreen(connection, scanner);
@@ -53,7 +51,7 @@ public class FinancialManagementSystem {
 									if (!loginvalue) {
 										count = count + 1;
 										System.out.println("certification failed");
-										input(" >> ");
+										InputUtils.input(" >> ");
 										clearConsole();
 										continue;
 									}
@@ -116,18 +114,18 @@ public class FinancialManagementSystem {
 							System.out.println("Exiting the program.");
 							return;
 						case 9:
-							String outfile = input(" Export File >> ");
+							String outfile = InputUtils.input(" Export File >> ");
 							if (outfile.contains(".sql") == false) {
 								outfile = outfile + ".sql";
 							}
 							SQLiteConnector.exportDatabase(outfile);
-							input(" >> ");
+							InputUtils.input(" >> ");
 							clearConsole();
 							break;
 						case 10:
-							String inputPath = input(" SqlFile Path >> ");
+							String inputPath = InputUtils.input(" SqlFile Path >> ");
 							SQLiteConnector.importDatabase(inputPath);
-							input(" >> ");
+							InputUtils.input(" >> ");
 							clearConsole();
 							break;
 						default:
@@ -198,7 +196,7 @@ public class FinancialManagementSystem {
 				outputToTextFile("Deposit", depositAmount, description);
 			}
 
-			input(" >> ");
+			InputUtils.input(" >> ");
 			clearConsole();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -340,7 +338,7 @@ public class FinancialManagementSystem {
 
 					System.out.println("Total Amount: " + formattedTotalAmount);
 				}
-				input(" >> ");
+				InputUtils.input(" >> ");
 				clearConsole();
 			}
 		} catch (SQLException e) {
@@ -379,7 +377,7 @@ public class FinancialManagementSystem {
 						writer.newLine();
 					}
 				}
-				input(" >> ");
+				InputUtils.input(" >> ");
 				clearConsole();
 			}
 		} catch (SQLException | IOException e) {
@@ -480,7 +478,7 @@ public class FinancialManagementSystem {
 		String newPassword = scanner.next();
 		System.out.print("Enter account number: ");
 		String newAccountNumber = scanner.next();
-		String description = input(" description >> ");
+		String description = InputUtils.input(" description >> ");
 		if (createUser(connection, newUsername, newPassword, newAccountNumber, description)) {
 			try {
 				depositTransaction(connection, newUsername);
@@ -547,7 +545,7 @@ public class FinancialManagementSystem {
 					System.out.println("Account Number: " + accountNumber);
 					System.out.println("Account Description: " + accountDescription);
 				}
-				input(" >> ");
+				InputUtils.input(" >> ");
 				clearConsole();
 			}
 		} catch (SQLException e) {
@@ -575,24 +573,6 @@ public class FinancialManagementSystem {
 			}
 		} else {
 			return folderPath + "/";
-		}
-	}
-
-	/**
-	 * ユーザーに入力を求めるメソッド
-	 * 
-	 * @param txt
-	 * @return 入力した文字列
-	 */
-	public static String input(String txt) {
-		try {
-			Scanner scanner = new Scanner(System.in);
-			System.out.print(txt);
-			String userInput = scanner.nextLine();
-			return userInput;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ""; // 何らかのエラーが発生した場合は空文字列を返すなど、適切な処理を行う
 		}
 	}
 
@@ -675,7 +655,7 @@ public class FinancialManagementSystem {
 				// Output to text file
 				outputToTextFile("Deposit", amount, description);
 			}
-			input(" >> ");
+			InputUtils.input(" >> ");
 			clearConsole();
 		} catch (SQLException e) {
 			e.printStackTrace();
