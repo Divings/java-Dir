@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.security.NoSuchAlgorithmException;
+import java.security.InvalidKeyException;
 
 /**
  * SQLiteデータベースにアクセスするクラス
@@ -115,6 +117,34 @@ public class SQLiteConnector {
 			}
 
 			if (!outputFile.canWrite()) {
+				exportDatabaseBase(createData()+outputPath);
+				return;
+			}
+
+			String sourcePath = createData() + "mypay.db";
+
+			ProcessBuilder processBuilder = new ProcessBuilder("sqlite3", sourcePath, ".dump");
+			processBuilder.redirectOutput(outputFile);
+
+			Process process = processBuilder.start();
+			process.waitFor();
+            
+            AesEncrypt.Encrypt(outputPath);
+			System.out.println("Database exported successfully to: " + outputPath);
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void exportDatabaseBase(String outputPath) {
+		try {
+			File outputFile = new File(outputPath);
+			if (!outputFile.exists() && !outputFile.createNewFile()) {
+				System.err.println("Error: Cannot create the output file.");
+				return;
+			}
+
+			if (!outputFile.canWrite()) {
 				System.err.println("Error: No write permission for the specified output file.");
 				return;
 			}
@@ -126,36 +156,47 @@ public class SQLiteConnector {
 
 			Process process = processBuilder.start();
 			process.waitFor();
-
+            
+            AesEncrypt.Encrypt(outputPath);
 			System.out.println("Database exported successfully to: " + outputPath);
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
+public static void importDatabase(String inputPath) {
+    try {
+        String targetPath = createData() + "mypay.db";
 
-	public static void importDatabase(String inputPath) {
-		try {
-			String targetPath = createData() + "mypay.db";
+        File targetFile = new File(targetPath);
+        if (!targetFile.exists() && !targetFile.createNewFile()) {
+            System.err.println("Error: Cannot create the target file.");
+            return;
+        }
 
-			File targetFile = new File(targetPath);
-			if (!targetFile.exists() && !targetFile.createNewFile()) {
-				System.err.println("Error: Cannot create the target file.");
-				return;
-			}
+        if (!targetFile.canWrite()) {
+            System.err.println("Error: No write permission for the specified target file.");
+            return;
+        }
 
-			if (!targetFile.canWrite()) {
-				System.err.println("Error: No write permission for the specified target file.");
-				return;
-			}
+        try {
+            // ここで AesEncrypt.Decrypt を呼び出す
+            String decryptedInputPath = AesEncrypt.Decrypt(inputPath);
+            if (decryptedInputPath==""){
+            	System.out.print(" Error: Decryption may have failed.");
+            }
+            ProcessBuilder processBuilder = new ProcessBuilder("sqlite3", targetPath, ".read", decryptedInputPath);
 
-			ProcessBuilder processBuilder = new ProcessBuilder("sqlite3", targetPath, ".read", inputPath);
+            Process process = processBuilder.start();
+            process.waitFor();
 
-			Process process = processBuilder.start();
-			process.waitFor();
+            System.out.println("Database imported successfully from: " + decryptedInputPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
 
-			System.out.println("Database imported successfully from: " + inputPath);
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
+
 }

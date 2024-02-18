@@ -124,6 +124,9 @@ public class FinancialManagementSystem {
 							break;
 						case 10:
 							String inputPath = InputUtils.input(" SqlFile Path >> ");
+							if (inputPath.contains(".sql") == false) {
+								inputPath = inputPath + ".sql";
+							}
 							SQLiteConnector.importDatabase(inputPath);
 							InputUtils.input(" >> ");
 							clearConsole();
@@ -349,41 +352,50 @@ public class FinancialManagementSystem {
 	/**
 	 * 履歴をファイルに出力
 	 */
-	private static void displayTransactionHistory(Connection connection) {
-		try {
-			String selectTransactionHistorySQL = "SELECT * FROM transactions WHERE username=?";
-			try (PreparedStatement preparedStatement = connection.prepareStatement(selectTransactionHistorySQL)) {
-				preparedStatement.setString(1, loggedInUser);
-				ResultSet resultSet = preparedStatement.executeQuery();
+private static void displayTransactionHistory(Connection connection) {
+    try {
+        String selectTransactionHistorySQL = "SELECT * FROM transactions WHERE username=?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectTransactionHistorySQL)) {
+            preparedStatement.setString(1, loggedInUser);
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-				System.out.println("Transaction History:");
+            System.out.println("Transaction History:");
 
-				// BufferedWriterを使ってファイルに追記
-				try (BufferedWriter writer = new BufferedWriter(new FileWriter("transaction_history.txt", true))) {
-					while (resultSet.next()) {
-						int id = resultSet.getInt("id");
-						String type = resultSet.getString("type");
-						BigDecimal amount = resultSet.getBigDecimal("amount");
-						String description = resultSet.getString("description");
-						String date = resultSet.getString("date");
+            String userDirectory = userData();
+            if (userDirectory.isEmpty()) {
+                System.out.println("Error: Unable to create data folder.");
+                return;
+            }
 
-						// コンソールに表示
-						System.out.println("ID: " + id + ", Type: " + type + ", Amount: " + formatAmount(amount)
-								+ ", Description: " + description + ", Date: " + date);
+            // ファイルパスを指定
+            String filePath = userDirectory + "transaction_history.txt";
 
-						// ファイルに追記
-						writer.write("ID: " + id + ", Type: " + type + ", Amount: " + formatAmount(amount)
-								+ ", Description: " + description + ", Date: " + date);
-						writer.newLine();
-					}
-				}
-				InputUtils.input(" >> ");
-				clearConsole();
-			}
-		} catch (SQLException | IOException e) {
-			e.printStackTrace();
-		}
-	}
+            // BufferedWriterを使ってファイルに追記
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String type = resultSet.getString("type");
+                    BigDecimal amount = resultSet.getBigDecimal("amount");
+                    String description = resultSet.getString("description");
+                    String date = resultSet.getString("date");
+
+                    // コンソールに表示
+                    System.out.println("ID: " + id + ", Type: " + type + ", Amount: " + formatAmount(amount)
+                            + ", Description: " + description + ", Date: " + date);
+
+                    // ファイルに追記
+                    writer.write("ID: " + id + ", Type: " + type + ", Amount: " + formatAmount(amount)
+                            + ", Description: " + description + ", Date: " + date);
+                    writer.newLine();
+                }
+            }
+            InputUtils.input(" >> ");
+            clearConsole();
+        }
+    } catch (SQLException | IOException e) {
+        e.printStackTrace();
+    }
+}
 
 	private static String formatAmount(BigDecimal amount) {
 		DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");

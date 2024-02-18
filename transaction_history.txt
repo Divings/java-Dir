@@ -1,0 +1,7 @@
+ID: 1, Type: Deposit, Amount: 45,000.00, Description: テスト用, Date: 2024-02-16
+ID: 2, Type: Deposit, Amount: 4,500.00, Description: テスト入金, Date: 2024-02-16
+ID: 3, Type: Withdrawal, Amount: -100.00, Description: テスト出金, Date: 2024-02-16
+ID: 4, Type: Transfer, Amount: -200.00, Description: test, Date: 2024-02-16
+ID: 5, Type: Withdrawal, Amount: -10.00, Description: テスト出金, Date: 2024-02-16
+ID: 6, Type: Deposit, Amount: 100.00, Description: テスト入金, Date: 2024-02-16
+ID: 7, Type: Deposit, Amount: 100.00, Description: テスト入金, Date: 2024-02-16
