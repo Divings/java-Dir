@@ -34,10 +34,23 @@
 
 ### セットアップ
 
+(windowsの場合を想定、そしてjava-JreやJDKは別途インストールしてください)
 1. リポジトリをクローン:
 
    ```bash
    git clone https://github.com/Divings/java-Dir.git
+2. binフォルダを作成します。
+
+   ```bash
+   mkdir bin
+3. Comple.batを使用してコンパイルします。
+   
+   ```bash
+   Compile.bat
+4. 実行する
+   
+   ```bash
+   java -jar FinancialManagementSystem.jar
 
 ## 注意:
 1. **注意:** transaction_history.txtはすべての入出金記録が記録されているため、ダミーデータを設定した場合以外は公開しない方が良いでしょう  
