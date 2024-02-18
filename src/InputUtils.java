@@ -1,5 +1,9 @@
 import java.util.Scanner;
 
+/**
+ * 各種入力機能を提供するメソッド
+ * */
+
 public class InputUtils {
 
     /**
