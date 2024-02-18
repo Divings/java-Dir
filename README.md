@@ -43,10 +43,15 @@
 
    ```bash
    mkdir bin
-3. Comple.batを使用してコンパイルします。
-   
+3. Comple.batを使用してコンパイルします。それか次のコマンドを使用してコンパイルしてJARファイルを作成してください
+
    ```bash
+   javac -encoding UTF-8 -d bin src/*.java
+   jar cfm FinancialManagementSystem.jar MANIFEST.MF -C bin .
+   
+   ```cmd
    Compile.bat
+
 4. 実行する
    
    ```bash
