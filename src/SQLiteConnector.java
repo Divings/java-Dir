@@ -108,9 +108,18 @@ public class SQLiteConnector {
 		}
 	}
 
-	public static void exportDatabase(String outputPath) {
+   public static void exportDatabase(String outputPath) {
 		try {
+			
+			// もしエクスポートできない場合(ユーザーデータディレクトリでのエクスポートを試す)
+			
 			File outputFile = new File(outputPath);
+			if (!outputFile.exists() && !outputFile.createNewFile()){
+				outputPath=createData()+outputPath;
+			    outputFile= new File(outputPath);
+			}
+			 
+			// もし上記のデータ加工でもアクセスできない場合はエラーを返す
 			if (!outputFile.exists() && !outputFile.createNewFile()) {
 				System.err.println("Error: Cannot create the output file.");
 				return;
