@@ -25,7 +25,7 @@
 3. **ログアウトまたは終了:** ログアウトオプションを選択してログアウトするか、プログラムを終了します。
 
 ## 最新リリース 
-[最新リリース](https://github.com/Divings/releases/latest)
+[最新リリース](https://github.com/Divings/java-Dir/releases/latest)
 
 ## 開始方法
 
