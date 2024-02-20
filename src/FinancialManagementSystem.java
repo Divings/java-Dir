@@ -21,6 +21,10 @@ public class FinancialManagementSystem {
 		try {
 			// Connect to the database
 			Connection connection = SQLiteConnector.connect();
+			if (connection==null){
+				InputUtils.input(" >> ");
+				System.exit(0);
+			}
 			clearConsole();
 			if (connection != null) {
 				try {
