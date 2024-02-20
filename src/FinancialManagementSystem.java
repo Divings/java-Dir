@@ -64,7 +64,6 @@ public class FinancialManagementSystem {
 							case 3:
 								System.out.println("Exiting the program.");
 								return;
-
 							default:
 								System.out.println("Invalid choice. Please select a valid option.");
 								break;
@@ -113,24 +112,6 @@ public class FinancialManagementSystem {
 						case 8:
 							System.out.println("Exiting the program.");
 							return;
-						case 9:
-							String outfile = InputUtils.input(" Export File >> ");
-							if (outfile.contains(".sql") == false) {
-								outfile = outfile + ".sql";
-							}
-							SQLiteConnector.exportDatabase(outfile);
-							InputUtils.input(" >> ");
-							clearConsole();
-							break;
-						case 10:
-							String inputPath = InputUtils.input(" SqlFile Path >> ");
-							if (inputPath.contains(".sql") == false) {
-								inputPath = inputPath + ".sql";
-							}
-							SQLiteConnector.importDatabase(inputPath);
-							InputUtils.input(" >> ");
-							clearConsole();
-							break;
 						default:
 							System.out.println("Invalid choice. Please select a valid option.");
 							break;
@@ -625,8 +606,6 @@ private static void displayTransactionHistory(Connection connection) {
 		System.out.println("6. ログアウト (Logout)");
 		System.out.println("7. アカウント情報の表示 (Display Account Information)");
 		System.out.println("8. 終了 (Exit)");
-		System.out.println("9. エクスポート(Export)");
-		System.out.println("10. インポート(import)");
 		System.out.print("Select an option: ");
 	}
 
