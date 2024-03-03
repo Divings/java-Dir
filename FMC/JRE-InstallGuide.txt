@@ -1,0 +1,22 @@
+FinancialManagementSystemの実行にはJava8-JREが必要です。
+
+以下は、Windowsの場合のダウンロード方法です。
+
+ダウンロードファイル名: java-1.8.0-openjdk-1.8.0.332-1.b09.ojdkbuild.windows.x86.zip
+ダウンロードURL(アーカイブ) URL: https://github.com/ojdkbuild/ojdkbuild/releases
+
+ダウンロードしたjava-1.8.0-openjdk-1.8.0.332-1.b09.ojdkbuild.windows.x86.zipを解凍し中の
+「jre/bin」フォルダの絶対パスを環境変数パスに設定してください。
+
+再起動後、README.txtに記載の方法でFinancialManagementSystemを実行してください。
+
+※ 本テキストファイルはあくまでwindowsの場合の説明です。Linuxやその他のOSの場合は、個別に調べてください。
+
+ライブラリLICENSE
+log4j-to-slf4j-2.22.1.jarはlibフォルダに配置してあるLICENSEを確認してください
+
+logback-classic-1.4.9.jarのライセンスは下記を参照してください
+https://www.eclipse.org/legal/epl-v10.html
+
+slf4j-api-2.0.9.jarとその関連ライブラリは以下で確認してください
+https://www.slf4j.org/license.html

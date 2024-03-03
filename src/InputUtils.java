@@ -1,8 +1,10 @@
 import java.util.Scanner;
+import java.io.Console;
 
 /**
  * 各種入力機能を提供するメソッド
- * */
+ * 
+ */
 
 public class InputUtils {
 
@@ -23,8 +25,22 @@ public class InputUtils {
         }
     }
 
-    // 他のユーティリティメソッドを追加できます
+    /**
+    *パスワード入力用メソッド
+    * @param pronpt 入力を促すメソッド
+    * @return 入力したパスワード
+    *  
+    */
+    public static String InputPassword(String prompt) {
+        Console console = System.console();
+        if (console == null) {
+            throw new RuntimeException("Console not available.");
+        }
 
+        char[] passwordArray = console.readPassword(prompt);
+        return new String(passwordArray);
+    }
+    
     public static int inputInt(String prompt) {
         try {
             String userInput = input(prompt);
@@ -43,19 +59,5 @@ public class InputUtils {
             System.out.println("数値を入力してください。デフォルト値 0.0 を返します。");
             return 0.0;
         }
-    }
-
-    // 他のユーティリティメソッドを追加できます
-
-    public static void main(String[] args) {
-        // テストコード
-        String userInput = InputUtils.input("何か入力してください: ");
-        System.out.println("入力した文字列: " + userInput);
-
-        int userIntInput = InputUtils.inputInt("整数を入力してください: ");
-        System.out.println("入力した整数: " + userIntInput);
-
-        double userDoubleInput = InputUtils.inputDouble("小数を入力してください: ");
-        System.out.println("入力した小数: " + userDoubleInput);
     }
 }

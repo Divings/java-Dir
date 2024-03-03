@@ -12,8 +12,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.InputMismatchException;
 
-public class FinancialManagementSystem {
+public class FMC {
 	private static String loggedInUser = null;
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in); // 新しいScannerオブジェクトを作成
@@ -31,8 +32,15 @@ public class FinancialManagementSystem {
 					while (true) {
 						if (loggedInUser == null) {
 							displayLoginMenu();
-							int loginChoice = scanner.nextInt();
+                            int loginChoice=0;
+                            try{
+							loginChoice = scanner.nextInt();
 							scanner.nextLine(); // Consume newline
+						}catch (InputMismatchException e) {
+							System.out.print("\n エラー許容されない値が入力されました");
+							InputUtils.input(" >> ");
+							continue;
+						}
 							System.out.println("");
 							clearConsole();
 							switch (loginChoice) {
@@ -113,11 +121,25 @@ public class FinancialManagementSystem {
 						case 7:
 							displayAccountInformation(connection);
 							break;
-						case 8:
+					    case 8:
+                        	
+                        	// 例：ユーザー名が存在しない場合は登録、存在する場合は表示
+                            DebitCardManager.registerOrDisplayDebitCardInfo(loggedInUser);
+                            InputUtils.input(" >> ");
+                            clearConsole();
+                            break;
+                        case 9:
+                        	DebitCardManager.exportText(loggedInUser);
+                        	InputUtils.input(" >> "); // ユーザーに確認(特に戻り値は取得しない)
+				            clearConsole();// 画面を初期化
+				            break;
+                        case 10:
 							System.out.println("Exiting the program.");
 							return;
 						default:
 							System.out.println("Invalid choice. Please select a valid option.");
+							InputUtils.input(" >> "); // ユーザーに確認(特に戻り値は取得しない)
+				            clearConsole();// 画面を初期化
 							break;
 						}
 					}
@@ -310,6 +332,46 @@ public class FinancialManagementSystem {
 	/**
 	 * 合計額表示
 	 */
+	
+    private static void updateAccountBalance(Connection connection) {
+    	BigDecimal newBalance=OutputAmount(connection);
+    try {
+        String updateBalanceSQL = "UPDATE accounts SET balance = ? WHERE username = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateBalanceSQL)) {
+            preparedStatement.setBigDecimal(1, newBalance);
+            preparedStatement.setString(2, loggedInUser);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
+private static BigDecimal OutputAmount(Connection connection){
+	BigDecimal totalAmount=BigDecimal.ZERO;
+	try {
+			String selectTotalAmountSQL = "SELECT SUM(amount) FROM transactions WHERE username=?";
+			try (PreparedStatement preparedStatement = connection.prepareStatement(selectTotalAmountSQL)) {
+				preparedStatement.setString(1, loggedInUser);
+				ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+					totalAmount = resultSet.getBigDecimal(1);
+
+					/*// 厳密な価格表示
+					NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
+					String formattedTotalAmount = currencyFormat.format(totalAmount);
+
+					System.out.println("Total Amount: " + formattedTotalAmount);*/
+				}
+				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return totalAmount;
+}
 	private static void displayTotalAmount(Connection connection) {
 		try {
 			String selectTotalAmountSQL = "SELECT SUM(amount) FROM transactions WHERE username=?";
@@ -451,13 +513,11 @@ private static void displayTransactionHistory(Connection connection) {
 		System.out.println("===== Login =====");
 		System.out.print("Enter username: ");
 		String username = scanner.nextLine();
-		System.out.print("Enter password: ");
-		String password = scanner.nextLine();
+		String password = InputUtils.InputPassword("Enter password: ");
 		boolean out = false;
 		if (login(connection, username, password)) {
 			loggedInUser = username;
 			clearConsole();
-			System.out.println("Login successful. Welcome, " + loggedInUser + "!");
 			out = true;
 		} else {
 			System.out.println("Login failed. Please try again.");
@@ -472,7 +532,7 @@ private static void displayTransactionHistory(Connection connection) {
 		System.out.print("Enter new username: ");
 		String newUsername = scanner.next();
 		System.out.print("Enter new password: ");
-		String newPassword = scanner.next();
+		String newPassword = InputUtils.InputPassword("");
 		System.out.print("Enter account number: ");
 		String newAccountNumber = scanner.next();
 		String description = InputUtils.input(" description >> ");
@@ -599,6 +659,8 @@ private static void displayTransactionHistory(Connection connection) {
 	}
 
 	private static void displayMenuOptions(String menuTitle) {
+		updateAccountBalance(DebitCardManager.connect());
+		System.out.println("Login successful. Welcome, " + loggedInUser + "!");
 		System.out.println("\n (C) Innovation Craft");
 		System.out.println("===== " + menuTitle + " =====");
 		// Display menu options
@@ -609,7 +671,9 @@ private static void displayTransactionHistory(Connection connection) {
 		System.out.println("5. 取引履歴の表示 (Display Transaction History)");
 		System.out.println("6. ログアウト (Logout)");
 		System.out.println("7. アカウント情報の表示 (Display Account Information)");
-		System.out.println("8. 終了 (Exit)");
+		System.out.println("8. Card DATA");
+		System.out.println("9. ALL DATA Export");
+		System.out.println("10. 終了 (Exit)");
 		System.out.print("Select an option: ");
 	}
 
